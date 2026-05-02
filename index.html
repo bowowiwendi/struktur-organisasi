@@ -74,20 +74,28 @@
 
         @media print {
             .no-print { display: none !important; }
-            body { background-color: white; }
+            body { background-color: white; padding: 0; }
+            .print-center-header { 
+                text-align: center !important; 
+                width: 100%;
+                margin-bottom: 2rem;
+            }
+            .max-w-7xl { max-width: 100% !important; }
         }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen p-4 md:p-8 font-sans text-slate-800">
 
     <div class="max-w-7xl mx-auto">
-        <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-                <h1 id="displayOrgName" class="text-3xl font-extrabold text-slate-900 uppercase tracking-tight">Struktur Organisasi</h1>
-                <p class="text-slate-500 no-print">Klik ikon pensil pada profil untuk mengedit data.</p>
+        <!-- Header yang dirapikan ke tengah -->
+        <header class="mb-10 flex flex-col items-center justify-center text-center print-center-header">
+            <div class="space-y-2">
+                <h1 id="displayOrgName" class="text-4xl font-extrabold text-slate-900 uppercase tracking-widest border-b-4 border-blue-600 pb-2 inline-block">Struktur Organisasi</h1>
+                <p class="text-slate-500 font-medium no-print">Klik ikon pensil pada profil untuk mengedit data personel.</p>
             </div>
-            <button onclick="window.print()" class="no-print flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-lg active:scale-95 transition-all">
-                <i data-lucide="download" class="w-5 h-5"></i> Cetak PDF
+            
+            <button onclick="window.print()" class="mt-6 no-print flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 shadow-xl shadow-blue-200 active:scale-95 transition-all font-bold">
+                <i data-lucide="printer" class="w-5 h-5"></i> Cetak Struktur (PDF)
             </button>
         </header>
 
