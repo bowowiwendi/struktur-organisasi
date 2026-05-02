@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Struktur Organisasi Mandiri</title>
+    <title>Struktur Organisasi Hibrida (Edit Mode)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
@@ -13,7 +13,6 @@
         .tree-container ul {
             padding-top: 20px; 
             position: relative;
-            transition: all 0.5s;
             display: flex;
             justify-content: center;
         }
@@ -23,212 +22,165 @@
             list-style-type: none;
             position: relative;
             padding: 20px 5px 0 5px;
-            transition: all 0.5s;
+            transition: all 0.3s;
         }
 
-        /* --- MODE VERTIKAL (Default) --- */
-        .mode-vertical ul { flex-direction: row; }
-        .mode-vertical li::before, .mode-vertical li::after {
+        /* Garis vertikal penghubung ke atas */
+        .tree-container li::before, .tree-container li::after {
             content: '';
             position: absolute; top: 0; right: 50%;
             border-top: 2px solid #cbd5e1;
             width: 50%; height: 20px;
         }
-        .mode-vertical li::after {
+        .tree-container li::after {
             right: auto; left: 50%;
             border-left: 2px solid #cbd5e1;
         }
-        .mode-vertical li:only-child::after, .mode-vertical li:only-child::before { display: none; }
-        .mode-vertical li:only-child { padding-top: 0; }
-        .mode-vertical li:first-child::before, .mode-vertical li:last-child::after { border: 0 none; }
-        .mode-vertical li:last-child::before { border-right: 2px solid #cbd5e1; border-radius: 0 5px 0 0; }
-        .mode-vertical li:first-child::after { border-radius: 5px 0 0 0; }
-        .mode-vertical ul ul::before {
+
+        .tree-container li:only-child::after, .tree-container li:only-child::before {
+            display: none;
+        }
+        .tree-container li:only-child { padding-top: 0; }
+        .tree-container li:first-child::before, .tree-container li:last-child::after { border: 0 none; }
+        .tree-container li:last-child::before { border-right: 2px solid #cbd5e1; border-radius: 0 5px 0 0; }
+        .tree-container li:first-child::after { border-radius: 5px 0 0 0; }
+
+        .tree-container ul ul::before {
             content: '';
             position: absolute; top: 0; left: 50%;
             border-left: 2px solid #cbd5e1;
             width: 0; height: 20px;
         }
 
-        /* --- MODE HORISONTAL --- */
-        .mode-horizontal ul { 
-            flex-direction: column; 
-            padding-top: 0; 
-            padding-left: 40px; 
+        .member-grid {
+            display: flex;
+            flex-wrap: wrap;
             justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+            position: relative;
         }
-        .mode-horizontal li { 
-            display: flex; 
-            align-items: center; 
-            padding: 10px 0 10px 20px; 
-        }
-        /* Garis horisontal penghubung ke kiri (atasan) */
-        .mode-horizontal li::before, .mode-horizontal li::after {
-            content: '';
-            position: absolute; left: 0; bottom: 50%;
-            border-left: 2px solid #cbd5e1;
-            width: 20px; height: 50%;
-        }
-        .mode-horizontal li::after {
-            bottom: auto; top: 50%;
-            border-top: 2px solid #cbd5e1;
-        }
-        .mode-horizontal li:only-child::after, .mode-horizontal li:only-child::before { display: none; }
-        .mode-horizontal li:only-child { padding-left: 0; }
-        .mode-horizontal li:first-child::before, .mode-horizontal li:last-child::after { border: 0 none; }
-        .mode-horizontal li:last-child::before { border-bottom: 2px solid #cbd5e1; border-radius: 0 0 0 5px; }
-        .mode-horizontal li:first-child::after { border-radius: 5px 0 0 0; }
         
-        /* Garis dari atasan ke arah kanan */
-        .mode-horizontal ul ul::before {
+        .member-grid::before {
             content: '';
-            position: absolute; top: 50%; left: 0;
-            border-top: 2px solid #cbd5e1;
-            width: 20px; height: 0;
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            border-left: 2px solid #cbd5e1;
+            height: 20px;
         }
 
         @media print {
             .no-print { display: none !important; }
             body { background-color: white; }
-            .print-center { text-align: center; width: 100%; }
         }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen p-4 md:p-8 font-sans text-slate-800">
 
-    <div class="max-w-6xl mx-auto">
-        <!-- Header -->
-        <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 print-center">
+    <div class="max-w-7xl mx-auto">
+        <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 id="displayOrgName" class="text-3xl font-extrabold text-slate-900 uppercase tracking-tight">Struktur Organisasi</h1>
-                <p class="text-slate-500 no-print">Atur tampilan vertikal atau horisontal sesuai kebutuhan.</p>
+                <p class="text-slate-500 no-print">Klik ikon pensil pada profil untuk mengedit data.</p>
             </div>
-            <div class="flex gap-2 no-print">
-                <button onclick="window.print()" class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all active:scale-95">
-                    <i data-lucide="download" class="w-5 h-5"></i> Cetak PDF
-                </button>
-            </div>
+            <button onclick="window.print()" class="no-print flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-lg active:scale-95 transition-all">
+                <i data-lucide="download" class="w-5 h-5"></i> Cetak PDF
+            </button>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            <!-- Panel Input & Pengaturan -->
+            <!-- Sidebar -->
             <div class="lg:col-span-1 space-y-6 no-print">
-                
-                <!-- Pengaturan Tampilan -->
                 <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
-                    <h2 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                        <i data-lucide="settings" class="w-4 h-4"></i> Pengaturan
-                    </h2>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-600 mb-1">Nama Organisasi</label>
-                            <input type="text" id="inputOrgName" oninput="updateOrgName(this.value)" placeholder="Nama Organisasi Anda" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-600 mb-2">Orientasi Struktur</label>
-                            <div class="flex p-1 bg-slate-100 rounded-lg">
-                                <button onclick="setOrientation('vertical')" id="btnVert" class="flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-md bg-white shadow-sm text-blue-600 transition-all">
-                                    <i data-lucide="align-justify" class="w-4 h-4 rotate-90"></i> Vertikal
-                                </button>
-                                <button onclick="setOrientation('horizontal')" id="btnHoriz" class="flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-md text-slate-500 hover:text-slate-700 transition-all">
-                                    <i data-lucide="align-justify" class="w-4 h-4"></i> Horisontal
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Pengaturan Judul</h2>
+                    <input type="text" id="inputOrgName" oninput="updateOrgName(this.value)" placeholder="Nama Organisasi" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
                 </div>
 
-                <!-- Form Tambah Anggota -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-fit">
-                    <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <i data-lucide="plus" class="text-blue-600"></i> Tambah Anggota
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h2 id="formTitle" class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <i data-lucide="user-plus" class="text-blue-600" id="formIcon"></i> <span>Tambah Personel</span>
                     </h2>
                     
                     <form id="orgForm" class="space-y-4">
-                        <div id="parentSelectionContainer">
-                            <label class="block text-sm font-medium text-slate-600 mb-1">Atasan Langsung</label>
-                            <select id="nodeParent" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                                <!-- Opsi diisi JS -->
+                        <!-- Hidden ID for Edit Mode -->
+                        <input type="hidden" id="editNodeId" value="">
+
+                        <div id="parentGroup">
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Atasan / Ketua Seksi</label>
+                            <select id="nodeParent" class="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 text-sm">
                             </select>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-slate-600 mb-1">Nama Lengkap</label>
-                            <input type="text" id="nodeName" placeholder="Contoh: Andi Wijaya" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" required>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Tipe Hubungan</label>
+                            <select id="nodeType" class="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                                <option value="sub">Bawahan Langsung (Turun)</option>
+                                <option value="equal">Anggota Setara (Samping)</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-4">
+                            <input type="text" id="nodeName" placeholder="Nama Lengkap" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm" required>
+                            <input type="text" id="nodeRole" placeholder="Jabatan" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm" required>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-slate-600 mb-1">Jabatan</label>
-                            <input type="text" id="nodeRole" placeholder="Contoh: Manager" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" required>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-slate-600 mb-1">Foto Profil</label>
-                            <div id="photoDropzone" class="w-full h-24 border-2 border-dashed border-slate-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-slate-50 overflow-hidden relative">
-                                <div id="photoPreviewContent" class="flex flex-col items-center text-slate-400">
-                                    <i data-lucide="camera" class="w-5 h-5 mb-1"></i>
-                                    <span class="text-[10px]">Klik Upload</span>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Foto</label>
+                            <div id="photoDropzone" class="w-full h-20 border-2 border-dashed border-slate-200 rounded-lg flex items-center justify-center cursor-pointer hover:bg-slate-50 relative overflow-hidden">
+                                <div id="photoPreviewContent" class="text-slate-400 flex flex-col items-center">
+                                    <i data-lucide="image" class="w-4 h-4"></i>
+                                    <span class="text-[10px]">Upload</span>
                                 </div>
                                 <img id="photoPreviewImg" class="hidden absolute inset-0 w-full h-full object-cover">
                             </div>
                             <input type="file" id="nodePhoto" accept="image/*" class="hidden">
                         </div>
 
-                        <button type="submit" class="w-full py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-all shadow-md active:scale-95">
-                            Tambah Anggota
-                        </button>
+                        <div class="flex gap-2">
+                            <button type="submit" id="submitBtn" class="flex-1 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 shadow-md transition-all active:scale-95">
+                                Simpan Personel
+                            </button>
+                            <button type="button" id="cancelBtn" onclick="resetForm()" class="hidden px-4 py-3 bg-slate-100 text-slate-600 font-bold rounded-lg hover:bg-slate-200 transition-all active:scale-95">
+                                Batal
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
 
-            <!-- Canvas Visualisasi -->
+            <!-- Bagan Utama -->
             <div class="lg:col-span-3 bg-white p-8 rounded-2xl shadow-sm border border-slate-100 overflow-auto min-h-[600px]">
-                <div id="chartContainer" class="tree-container mode-vertical w-full min-w-max transition-all duration-500">
-                    <!-- Pohon dirender di sini -->
+                <div id="chartContainer" class="tree-container">
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let nodes = [{ id: '1', name: 'Budi Santoso', role: 'CEO / Direktur Utama', photo: null, parentId: null }];
+        let nodes = [
+            { id: '1', name: 'Ketua Umum', role: 'Pimpinan', photo: null, parentId: null, type: 'sub' }
+        ];
         let currentPhotoBase64 = null;
-        let orientation = 'vertical';
 
         lucide.createIcons();
 
         const form = document.getElementById('orgForm');
+        const editNodeId = document.getElementById('editNodeId');
         const photoInput = document.getElementById('nodePhoto');
         const photoDropzone = document.getElementById('photoDropzone');
         const photoPreviewImg = document.getElementById('photoPreviewImg');
         const photoPreviewContent = document.getElementById('photoPreviewContent');
         const parentSelect = document.getElementById('nodeParent');
         const chartContainer = document.getElementById('chartContainer');
-        const displayOrgName = document.getElementById('displayOrgName');
-        const inputOrgName = document.getElementById('inputOrgName');
+        const formTitle = document.getElementById('formTitle').querySelector('span');
+        const submitBtn = document.getElementById('submitBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
 
         function updateOrgName(val) {
-            displayOrgName.innerText = val || "Struktur Organisasi";
-        }
-
-        // Fungsi Ganti Orientasi
-        function setOrientation(mode) {
-            orientation = mode;
-            const btnVert = document.getElementById('btnVert');
-            const btnHoriz = document.getElementById('btnHoriz');
-            
-            if (mode === 'vertical') {
-                chartContainer.classList.replace('mode-horizontal', 'mode-vertical');
-                btnVert.classList.add('bg-white', 'shadow-sm', 'text-blue-600');
-                btnHoriz.classList.remove('bg-white', 'shadow-sm', 'text-blue-600');
-                btnHoriz.classList.add('text-slate-500');
-            } else {
-                chartContainer.classList.replace('mode-vertical', 'mode-horizontal');
-                btnHoriz.classList.add('bg-white', 'shadow-sm', 'text-blue-600');
-                btnVert.classList.remove('bg-white', 'shadow-sm', 'text-blue-600');
-                btnVert.classList.add('text-slate-500');
-            }
-            renderChart();
+            document.getElementById('displayOrgName').innerText = val || "Struktur Organisasi";
         }
 
         photoDropzone.onclick = () => photoInput.click();
@@ -246,90 +198,183 @@
             }
         };
 
-        function updateParentSelect() {
-            if (nodes.length === 0) {
-                parentSelect.innerHTML = '<option value="null">-- Pemimpin Utama --</option>';
-            } else {
-                parentSelect.innerHTML = nodes.map(node => 
-                    `<option value="${node.id}">${node.name} (${node.role})</option>`
-                ).join('');
+        function deleteNode(id) {
+            if(confirm("Hapus personel ini dan seluruh cabangnya?")) {
+                const getChildren = (pid) => {
+                    let toDelete = [pid];
+                    nodes.filter(n => n.parentId === pid).forEach(child => {
+                        toDelete = [...toDelete, ...getChildren(child.id)];
+                    });
+                    return toDelete;
+                };
+                const idsToRemove = getChildren(id);
+                nodes = nodes.filter(n => !idsToRemove.includes(n.id));
+                renderChart();
+                updateParentSelect();
+                resetForm();
             }
         }
 
-        function deleteMember(id) {
-            const getChildIds = (parentId) => {
-                let ids = [parentId];
-                const children = nodes.filter(n => n.parentId === parentId);
-                children.forEach(child => ids = [...ids, ...getChildIds(child.id)]);
-                return ids;
-            };
-            nodes = nodes.filter(node => !getChildIds(id).includes(node.id));
-            renderChart();
-            updateParentSelect();
+        function startEdit(id) {
+            const node = nodes.find(n => n.id === id);
+            if (!node) return;
+
+            editNodeId.value = node.id;
+            document.getElementById('nodeName').value = node.name;
+            document.getElementById('nodeRole').value = node.role;
+            document.getElementById('nodeType').value = node.type;
+            document.getElementById('nodeParent').value = node.parentId || 'null';
+            
+            // Handle Foto
+            currentPhotoBase64 = node.photo;
+            if (node.photo) {
+                photoPreviewImg.src = node.photo;
+                photoPreviewImg.classList.remove('hidden');
+                photoPreviewContent.classList.add('hidden');
+            } else {
+                photoPreviewImg.classList.add('hidden');
+                photoPreviewContent.classList.remove('hidden');
+            }
+
+            // Sembunyikan pemilihan parent untuk root
+            document.getElementById('parentGroup').style.display = node.parentId === null ? 'none' : 'block';
+
+            // UI Changes
+            formTitle.innerText = "Edit Personel";
+            submitBtn.innerText = "Perbarui Data";
+            submitBtn.classList.replace('bg-blue-600', 'bg-orange-600');
+            submitBtn.classList.replace('hover:bg-blue-700', 'hover:bg-orange-700');
+            cancelBtn.classList.remove('hidden');
+            
+            // Scroll ke form pada mobile
+            document.getElementById('orgForm').scrollIntoView({ behavior: 'smooth' });
         }
 
-        function generateHTML(nodeId) {
-            const node = nodes.find(n => n.id === nodeId);
-            if (!node) return '';
-            const children = nodes.filter(n => n.parentId === node.id);
+        function resetForm() {
+            form.reset();
+            editNodeId.value = "";
+            currentPhotoBase64 = null;
+            photoPreviewImg.classList.add('hidden');
+            photoPreviewContent.classList.remove('hidden');
+            formTitle.innerText = "Tambah Personel";
+            submitBtn.innerText = "Simpan ke Bagan";
+            submitBtn.classList.replace('bg-orange-600', 'bg-blue-600');
+            submitBtn.classList.replace('hover:bg-orange-700', 'hover:bg-blue-700');
+            cancelBtn.classList.add('hidden');
+            document.getElementById('parentGroup').style.display = 'block';
+        }
 
+        function updateParentSelect() {
+            parentSelect.innerHTML = nodes.map(n => `<option value="${n.id}">${n.name} (${n.role})</option>`).join('');
+        }
+
+        function renderNodeCard(node) {
             const photoHtml = node.photo 
                 ? `<img src="${node.photo}" class="w-full h-full object-cover">`
-                : `<i data-lucide="camera" class="text-blue-200 w-5 h-5"></i>`;
+                : `<i data-lucide="user" class="text-blue-200 w-5 h-5"></i>`;
 
             return `
-                <li>
-                    <div class="relative flex flex-col items-center p-3 mx-auto bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all w-40 group z-10">
-                        <button onclick="deleteMember('${node.id}')" class="absolute -top-2 -right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all no-print shadow-sm active:scale-90">
-                            <i data-lucide="trash-2" class="w-3 h-3"></i>
+                <div class="relative flex flex-col items-center p-3 mx-auto bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all w-36 group z-10">
+                    <div class="absolute -top-2 -right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all no-print">
+                        <button onclick="startEdit('${node.id}')" class="p-1 bg-orange-500 text-white rounded-full shadow-sm hover:bg-orange-600">
+                            <i data-lucide="pencil" class="w-3 h-3"></i>
                         </button>
-                        <div class="w-12 h-12 bg-slate-50 rounded-full mb-2 flex items-center justify-center overflow-hidden border border-slate-100 shadow-inner">
-                            ${photoHtml}
-                        </div>
-                        <h3 class="font-bold text-slate-800 text-center text-[11px] leading-tight h-6 flex items-center justify-center">${node.name}</h3>
-                        <p class="text-blue-600 text-[8px] text-center font-bold mt-1 uppercase bg-blue-50 px-2 py-0.5 rounded-full">${node.role}</p>
+                        <button onclick="deleteNode('${node.id}')" class="p-1 bg-red-500 text-white rounded-full shadow-sm hover:bg-red-600">
+                            <i data-lucide="x" class="w-3 h-3"></i>
+                        </button>
                     </div>
-                    ${children.length > 0 ? `<ul>${children.map(c => generateHTML(c.id)).join('')}</ul>` : ''}
-                </li>
+                    <div class="w-10 h-10 bg-slate-50 rounded-full mb-2 flex items-center justify-center overflow-hidden border border-slate-100 shadow-inner">
+                        ${photoHtml}
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-center text-[10px] leading-tight h-6 flex items-center justify-center uppercase tracking-tight">${node.name}</h3>
+                    <p class="text-blue-600 text-[8px] text-center font-bold mt-1 uppercase bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">${node.role}</p>
+                </div>
             `;
+        }
+
+        function generateTreeHTML(parentId) {
+            const children = nodes.filter(n => n.parentId === parentId);
+            if (children.length === 0) return '';
+
+            const subNodes = children.filter(c => c.type === 'sub');
+            const equalNodes = children.filter(c => c.type === 'equal');
+
+            let html = '';
+
+            if (subNodes.length > 0) {
+                html += `<ul>`;
+                subNodes.forEach(child => {
+                    html += `
+                        <li>
+                            ${renderNodeCard(child)}
+                            ${generateTreeHTML(child.id)}
+                        </li>
+                    `;
+                });
+                html += `</ul>`;
+            }
+
+            if (equalNodes.length > 0) {
+                html += `<div class="member-grid">`;
+                equalNodes.forEach(member => {
+                    html += renderNodeCard(member);
+                });
+                html += `</div>`;
+            }
+
+            return html;
         }
 
         function renderChart() {
             if (nodes.length === 0) {
-                chartContainer.innerHTML = `<div class="py-20 text-slate-300 text-center"><i data-lucide="users" class="w-16 h-16 mx-auto opacity-20 mb-2"></i><p>Kosong</p></div>`;
+                chartContainer.innerHTML = '<div class="text-center text-slate-300 py-20 italic">Bagan Kosong</div>';
             } else {
-                const rootNodes = nodes.filter(n => !n.parentId || !nodes.find(p => p.id === n.parentId));
-                chartContainer.innerHTML = `<ul>${rootNodes.map(r => generateHTML(r.id)).join('')}</ul>`;
+                const root = nodes.find(n => !n.parentId);
+                if (root) {
+                    chartContainer.innerHTML = `
+                        <ul class="flex flex-col items-center">
+                            <li>
+                                ${renderNodeCard(root)}
+                                ${generateTreeHTML(root.id)}
+                            </li>
+                        </ul>
+                    `;
+                }
             }
             lucide.createIcons();
         }
 
         form.onsubmit = (e) => {
             e.preventDefault();
+            const idValue = editNodeId.value;
             const name = document.getElementById('nodeName').value;
             const role = document.getElementById('nodeRole').value;
-            const parentValue = parentSelect.value;
-            
-            const newNode = {
-                id: Date.now().toString(),
-                name, role,
-                photo: currentPhotoBase64,
-                parentId: (parentValue === "null" || nodes.length === 0) ? null : parentValue
-            };
+            const type = document.getElementById('nodeType').value;
+            const parentId = parentSelect.value;
 
-            nodes.push(newNode);
-            form.reset();
-            currentPhotoBase64 = null;
-            photoPreviewImg.classList.add('hidden');
-            photoPreviewContent.classList.remove('hidden');
+            if (idValue) {
+                // Update Existing
+                const index = nodes.findIndex(n => n.id === idValue);
+                if (index !== -1) {
+                    nodes[index] = { ...nodes[index], name, role, type, parentId, photo: currentPhotoBase64 };
+                }
+            } else {
+                // Add New
+                nodes.push({
+                    id: Date.now().toString(),
+                    name, role, type, parentId,
+                    photo: currentPhotoBase64
+                });
+            }
+
+            resetForm();
             renderChart();
             updateParentSelect();
-            parentSelect.value = newNode.id;
         };
 
         updateParentSelect();
         renderChart();
-        inputOrgName.value = "Struktur Organisasi";
+        document.getElementById('inputOrgName').value = "Struktur Organisasi";
     </script>
 </body>
 </html>
